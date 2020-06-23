@@ -21,6 +21,32 @@ client.on("message", async (msg) => {
     var count = 0;
 
     var flag = false;
+
+    while (flag === false) {
+      client.on("message", (msg) => {
+        if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+        if (msg.content === `${prefix}stop`) {
+          flag = true;
+        }
+      });
+
+      if (flag === false) {
+        const userVoice = await msg.author.presence.guild.me.voice;
+
+        if (userVoice.mute === true) {
+          await userVoice.setMute(false);
+        } else {
+          await userVoice.setMute(true);
+        }
+        count++;
+        sleep(3000);
+      }
+    }
+  }
+
+  //if (msg.content === `${prefix}stop`) {
+  //  flag = true;
+  //}
 });
 
 client.login(token);
