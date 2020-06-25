@@ -3,58 +3,67 @@ const { token, prefix } = require("./config.json");
 
 const client = new disc.Client();
 
-client.on("message", async (msg) => {
-  if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+const { system_manager } = require("./system_manager");
+const system = new system_manager(client);
+
+const { player } = require("./player.js");
+
+client.on("ready", async () => {
+	console.log("Ready");
 });
 
-client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setActivity();
-});
-
 client.on("message", async (msg) => {
-  if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
-  if (msg.content === `${prefix}start`) {
-    await msg.channel.send("Cornooo");
+	// START COMMAND
+	if (msg.content === `${prefix}start` && system.is_game_started == false) {
+		system.voice_connection = await msg.member.voice.channel.join();
 
-    var count = 0;
+		system.join_phase(msg);
+	} else if (
+		msg.content === `${prefix}start` &&
+		system.is_game_started == true
+	) {
+		await msg.channel.send("Game already started, bitch");
+	}
 
-    var flag = false;
+	// STOP COMMAND
+	else if (msg.content.startsWith(`${prefix}stop`)) {
+		clearTimeout(system.prep_timer);
+		system.stop_phases();
+		await msg.channel.send("Game Stopped");
+	}
 
-    while (flag === false) {
-      client.on("message", (msg) => {
-        if (!msg.content.startsWith(prefix) || msg.author.bot) return;
-        if (msg.content === `${prefix}stop`) {
-          flag = true;
-        }
-      });
+	// LIST COMMAND
+	else if (
+		msg.content.startsWith(`${prefix}list`) &&
+		system.is_game_started == true
+	) {
+		// PLAYERS LIST COMMAND
+		if (msg.content.split(" ")[1] === "players") {
+			await msg.channel.send(system.listPlayers());
+		}
+	}
 
-      if (flag === false) {
-        const userVoice = await msg.author.presence.guild.me.voice;
+	// PLAY COMMAND
+	else if (
+		msg.content === `${prefix}play` &&
+		system.is_game_started == true &&
+		system.is_game_prepared == false
+	) {
+		if (system.voice_connection.voice.channel === msg.member.voice.channel) {
+			await msg.channel.send("Jogador " + msg.member.displayName + " Entrou");
+			const new_player = new player(msg.member);
 
-        if (userVoice.mute === true) {
-          await userVoice.setMute(false);
-        } else {
-          await userVoice.setMute(true);
-        }
-        count++;
-        sleep(3000);
-      }
-    }
-  }
-
-  //if (msg.content === `${prefix}stop`) {
-  //  flag = true;
-  //}
+			system.currrent_players.push(new_player);
+		} else {
+			await msg.channel.send(
+				msg.member.displayName + " is not at the same voice channel as me"
+			);
+		}
+	} else {
+		await msg.channel.send("Comando não existe");
+	}
 });
 
 client.login(token);
-
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
