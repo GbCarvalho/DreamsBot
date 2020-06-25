@@ -1,5 +1,5 @@
 class player {
-	constructor(app, member) {
+	constructor(member) {
 		this.member = member;
 		this.is_alive = true;
 		this.work = null;

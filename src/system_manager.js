@@ -1,15 +1,21 @@
 const { sleeping_city } = require("./games/sleeping_city");
+const { player } = require("./player");
 
 class system_manager {
-	constructor(app, client) {
+	constructor(client) {
 		this.is_game_started = false;
 		this.is_game_prepared = false;
 		this.voice_connection = null;
-		this.currrent_players = new Array();
+		this.currrent_players = [];
 		this.prep_timer = null;
 		this.client = client;
 		this.channel = null;
 		this.guild = null;
+		this.game = null;
+	}
+
+	addPlayer(added_player) {
+		this.currrent_players.push(new player(added_player));
 	}
 
 	listPlayers() {
@@ -56,6 +62,7 @@ class system_manager {
 
 	start_phase() {
 		this.client.channels.cache.get(this.channel).send("The game has started");
+		this.game.start();
 	}
 }
 
