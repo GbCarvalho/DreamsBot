@@ -5,7 +5,7 @@ module.exports = {
 	description: "List all of my commands or info about a specific command.",
 	aliases: ["commands"],
 	usage: "[command name]",
-	async execute(msg, args) {
+	async execute(msg, args, system) {
 		const data = [];
 		const { commands } = msg.client;
 

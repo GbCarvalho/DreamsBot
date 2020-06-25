@@ -18,11 +18,13 @@
 	},
 	"homepage": "https://github.com/GbCarvalho/DreamsBot#readme",
 	"dependencies": {
+		"discord": "^0.8.2",
 		"discord.js": "^12.2.0",
-		"mongoose": "^5.9.20"
+		"mongoose": "^5.9.20",
+		"node-sass": "^4.14.1"
 	},
 	"devDependencies": {
-		"eslint": "^7.3.0",
+		"eslint": "^7.3.1",
 		"eslint-config-airbnb-base": "^14.2.0",
 		"eslint-plugin-import": "^2.21.2"
 	}

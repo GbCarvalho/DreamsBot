@@ -2,7 +2,7 @@ module.exports = {
 	name: "start",
 	description: "Start!",
 	guildOnly: true,
-	async execute(msg, prefix, system) {
+	async execute(msg,  args, system) {
 		if (system.is_game_started == false) {
 			system.voice_connection = await msg.member.voice.channel.join();
 

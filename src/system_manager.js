@@ -1,4 +1,4 @@
-const { sleeping_city } = require("./sleeping_city");
+const { sleeping_city } = require("./games/sleeping_city");
 
 class system_manager {
 	constructor(app, client) {
