@@ -26,14 +26,19 @@ client.on("ready", async () => {
 });
 
 client.on("message", async (msg) => {
+
+	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
+	const args = msg.content.slice(prefix.length).split(/ +/);
+	const command = args.shift().toLowerCase();
 	
 	if (!client.commands.has(command)) return;
 
 	try {
-		client.commands.get(command).execute(message, args, system);
+		client.commands.get(command).execute(msg, args, system);
 	} catch (error) {
 		console.error(error);
-		message.reply('there was an error trying to execute that command!');
+		msg.reply('Error in this command!');
 	}
 	// START COMMAND
 	

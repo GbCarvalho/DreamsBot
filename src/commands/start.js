@@ -5,6 +5,7 @@ module.exports = {
 	async execute(msg,  args, system) {
 		if (system.is_game_started == false) {
 			system.voice_connection = await msg.member.voice.channel.join();
+			await msg.channel.send("Game Started, bitch");
 
 			system.join_phase(msg);
 		} else if (system.is_game_started == true) {
