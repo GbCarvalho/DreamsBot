@@ -8,7 +8,7 @@ module.exports = {
 				`You didn't provide the correct args, ${msg.author}!`
 			);
 		} else if (args[0] === "players") {
-			await msg.channel.send(listPlayers());
+			await msg.channel.send(system.listPlayers());
 		}
 	},
 };
