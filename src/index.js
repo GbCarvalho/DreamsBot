@@ -1,13 +1,17 @@
+const disc = require("discord.js");
+const { token, prefix } = require("../config.json");
 const fs = require("fs");
-const Discord = require("discord.js");
-const { prefix, token } = require(" ./config.json");
+
+const client = new disc.Client();
+client.commands = new disc.Collection();
+
 const { system_manager } = require("./system_manager");
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const system = new system_manager(client);
+system.setGame();
 
 const commandFiles = fs
-	.readdirSync("./commands")
+	.readdirSync("src/commands")
 	.filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
@@ -15,19 +19,25 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-client.on("message", (msg) => {
+client.on("ready", async () => {
+	console.log("Ready");
+});
+
+client.on("message", async (msg) => {
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
-	const args = msg.content.slice(prefix.length).split(" ");
+
+	const args = msg.content.slice(prefix.length).split(/ +/);
 	const command = args.shift().toLowerCase();
 
 	if (!client.commands.has(command)) return;
 
 	try {
-		client.command.get(command).execute(msg, args, system_manager);
-	} catch (e) {
-		console.error(e);
-		msg.reply(
-			`There was an error trying to execute that command! (${prefix}${command})`
-		);
+		client.commands.get(command).execute(msg, args, system);
+	} catch (error) {
+		console.error(error);
+		msg.reply("Error in this command!");
 	}
+	// START COMMAND
 });
+
+client.login(token);
