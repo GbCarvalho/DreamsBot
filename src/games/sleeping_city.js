@@ -1,5 +1,5 @@
 class sleeping_city {
-	constructor(app, currrent_players) {
+	constructor(currrent_players) {
 		this.currrent_players = currrent_players;
 	}
 	start() {}
